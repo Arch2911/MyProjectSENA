@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/82e1ee39b7.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <title>Document</title>
+</head>
+<body>
+
+<!--Formulario de identificación.
+Permite al usuario ingresar su número 
+de identificación para iniciar la consulta del pedido.
+-->
+    <div class="form-box" id="form-cedula">
+
+            <div class="title">
+                <img src="../static/Images/Ruta.png" alt="">
+            </div>
+
+            <p class="one">Consulta fácilmente tu pedido con tu número de identificación.</p>
+            <input class="in" id="cedula" type="number" placeholder="Ingrese su identificación">
+            <div class="search">
+                <button disabled id="btn" type="button">Consultar</button>
+            </div>
+    </div>
+
+<!--Formulario del PIN
+Permite al usuario introducir un código 
+enviado por mensaje de texto para continuar.
+-->
+    <div class="form-box oculto" id="form-otp">
+
+        <div class="header-form">
+            <div class="auth-icon">
+                <i class="fa-solid fa-comment-sms"></i>
+            </div>
+            <h4>Código de acceso</h4>
+            <p class="two">Te hemos enviado un código por mensaje de texto. Escríbelo aquí para continuar con la consulta de tu pedido.</p>
+        </div>
+
+<!-- Mensaje de error, desactivado por el momento -->
+        <div class="error">Error</div>
+
+<!-- Campos del PIN de 5 dígitos -->
+        <form>
+            <div class="pin">
+                <input type="text" class="code-input" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-input" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-input" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-input" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-input" maxlength="1" inputmode="numeric">
+                <input type="text" class="code-input" maxlength="1" inputmode="numeric">
+            </div>
+
+            <div class="verify">
+                <button disabled type="button" id="btn-otp">Verificar</button>
+            </div>
+        </form>
+
+<!-- Enlace para reenviar el código -->
+        <p class="three">
+            Enviar de nuevo el código
+            <a href="javascript:void(0)">click aquí</a>
+        </p>
+
+    </div>
+
+<script type="module" src="../static/scripts/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+#Variables sensibles
+.env
+
+#Entorno virtual
+env/
+venv/
+
+# Caché de Python (lo tienes en varias carpetas)
+__pycache__/
+*.pyc
+
+# Caché de testing
+.pytest_cache/
+
+# Logs
+*.log
+
+# Archivos del sistema
+.DS_Store
+
+# IDEs / editores
+.vscode/
+.idea/

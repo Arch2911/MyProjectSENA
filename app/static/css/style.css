@@ -1,0 +1,216 @@
+/* === Reinicio general === */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* === Base === */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+/* === Formularios === */
+
+.form-box {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 20px 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.1);
+}
+/*formulario otp oculto*/
+.oculto {
+    display: none;
+}
+
+/* Espaciado general de elementos dentro del formulario */
+
+.form-box, p, .header-form {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* Imagen de encabezado */
+
+.title {
+    gap: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.title img {
+    width: 160px;
+    height: auto;
+    object-fit: contain;
+    color: #801AF5;
+}
+
+/* === Formulario de identificación === */
+
+.one {
+    font-size: 18px;
+}
+
+.in {
+    width: 100%;
+    padding: 10px;  
+    font-size: 18px;      
+    font-weight: 500; 
+    margin-bottom: 20px;
+    text-align: center;
+    border-color: #e8e8e8;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    outline: none;
+}
+
+/* Estilo de foco al escribir */
+
+.in:focus {
+    border: 1px solid #801AF5;
+}
+
+/* Elimina las flechas en inputs tipo número */
+
+.in::-webkit-inner-spin-button,
+.in::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+/* === Formulario del PIN === */
+
+.auth-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(41, 128, 185, 0.1);
+    margin: 0 auto 20px;
+    
+}
+
+.auth-icon i {
+    font-size: 45px;
+    color: #801AF5;
+}
+
+/* textos del encabezado del formulario */
+
+.header-form h4 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.header-form p {
+    font-size: 16px;
+    color: #040404;
+}
+
+/* === Los campos PIN === */
+
+.pin {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* === Los campos individuales del PIN === */
+
+.pin .code-input {
+    width: 100%;
+    min-height: 50px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: #040404;
+    border-color: #e8e8e8;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    outline: none;
+}
+
+.code-input::-webkit-inner-spin-button,
+.code-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+/* Cambia el color del borde al enfocar */
+
+.pin .code-input:focus {
+    border: 1px solid #801AF5;
+}
+
+/* Espaciado entre los cuadros del PIN */
+
+.pin .code-input:nth-child(n+2) {
+    margin-left: 15px;
+}
+
+/* === Mensaje de error === */
+
+.error {
+    color: #851923;
+    padding: 4px 6px;
+    text-align: center;
+    border-radius: 4px;
+    background: #ffe3e5;
+    border: 1px solid #dfa5ab;
+    margin-bottom: 10px;
+    display: none;
+}
+
+/* === Botones === */
+
+button {
+    width: 100%;
+    padding: 15px 30px;
+    border-radius: 8px;
+    background-color: #801AF5;
+    color: #fff;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: 0.5s;
+}
+
+/* Estado cuando el boton de esta deshabilitado */
+
+button:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: initial;
+}
+
+.three {
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+/* === Responsividad === */
+
+@media(max-width:475px) {
+    .pin .code-input:nth-child(n+2) {
+    margin-left: 5px;
+    }
+}
