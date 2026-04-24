@@ -10,6 +10,10 @@ export async function obtenerPedidos() {
 
         const data = await response.json();
 
+        if (!response.ok) {
+            console.error('Error HTTP: ', response.status);
+        }
+
         return data;
 
     } catch (error){

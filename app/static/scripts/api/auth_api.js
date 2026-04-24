@@ -14,6 +14,10 @@ export async function buscarCliente(cedula) {
 
         const data = await response.json();
 
+        if (!response.ok) {
+            console.error('Error HTTP: ', response.status);
+        }
+
         return data;
 
     } catch (error) {
@@ -34,7 +38,12 @@ export async function verificarOtp(codigo) {
         body: JSON.stringify({ codigo })
         });
 
+
         const data = await response.json();
+
+        if (!response.ok) {
+            console.error('Error HTTP: ', response.status);
+        }
 
         return data;
 

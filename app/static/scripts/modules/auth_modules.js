@@ -30,9 +30,20 @@ export function initAuth() {
 
             const data = await buscarCliente(cedula);
 
-            if (!data) {
-                alert('Error de conexión');
+            if (data.status === 'error') {
+
+                // Se evalua los tipos de errores
+
+                if (data.error === 'json_requerido') {
+                    alert('No has ingresando ningún dato')
+                }else if (data.error === 'cedula_requerida') {
+                    alert('Por favor ingresa la cédula para la consulta')
+                }else if (data.error === 'cliente_no_existe') {
+                    alert('No se ha encontrado un cliente con esa cédula');
+                }
+
                 return;
+
             }
 
             if (data.status === 'success') {
@@ -74,12 +85,32 @@ export function initAuth() {
 
             const data = await verificarOtp(codigo);
 
-            if (!data) {
-                alert('Error de conexión');
+            if (data.status === 'error') {
+
+                // Se evalua los tipos de errores
+
+                if (data.error === 'json_requerido') {
+                    alert('No hay datos ingresados')
+                } else if (data.error === 'sesion_invalida') {
+                    alert('La sesión ha expirado, vuelve a iniciar sesión')
+                    window.location.href = '/';
+                } else if (data.error === 'cliente_no_existe') {
+                    alert('No se ha encontrado un cliente esa cédula');
+                } else if (data.error === 'codigo_requerido') {
+                    alert('Por favor ingresa el código completo')
+                } else if (data.error === 'codigo_invalido') {
+                    alert('El código es incorrecto, intenta nuevamente')
+                } else if (data.error === 'codigo_expirado') {
+                    alert ('El código expiró, solicita uno nuevo')
+                    window.location.href = '/';
+                }
+
                 return;
+
             }
 
             if (data.status === 'success') {
+
                 window.location.href = '/pedidos';
             }
         });
