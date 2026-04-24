@@ -12,6 +12,7 @@ export async function obtenerPedidos() {
 
         if (!response.ok) {
             console.error('Error HTTP: ', response.status);
+            return data;
         }
 
         return data;

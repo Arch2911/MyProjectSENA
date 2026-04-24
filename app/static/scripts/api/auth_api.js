@@ -16,6 +16,7 @@ export async function buscarCliente(cedula) {
 
         if (!response.ok) {
             console.error('Error HTTP: ', response.status);
+            return data;
         }
 
         return data;
@@ -43,6 +44,7 @@ export async function verificarOtp(codigo) {
 
         if (!response.ok) {
             console.error('Error HTTP: ', response.status);
+            return data;
         }
 
         return data;
