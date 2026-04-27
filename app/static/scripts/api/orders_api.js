@@ -4,21 +4,23 @@ export async function obtenerPedidos() {
     try {
         const response = await fetch('/orders', {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'},
             credentials: 'include'
         });
 
         const data = await response.json();
 
-        if (!response.ok) {
-            console.error('Error HTTP: ', response.status);
-            return data;
-        }
-
-        return data;
+        return {
+            ok: response.ok,
+            status: response.status,
+            data
+        };
 
     } catch (error){
-        console.error('Error', error);
-        return null;
+        console.error('Error de red', error);
+        return {
+            ok: false,
+            status: 0,
+            error: 'network_error'
+        };
     }
 }

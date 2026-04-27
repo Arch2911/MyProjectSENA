@@ -28,7 +28,19 @@ export function initAuth() {
 
             const cedula = inputCedula.value;
 
-            const data = await buscarCliente(cedula);
+            const response = await buscarCliente(cedula);
+            
+            if (response.status === 0) {
+                alert('Sin conexión de red o al servidor');
+                return;
+            }
+
+            if (!response.ok) {
+                alert(`Error HTTP: ${response.status}`);
+                return;
+            }
+
+            const data = response.data;
 
             if (data.status === 'error') {
 
@@ -83,7 +95,19 @@ export function initAuth() {
 
             const codigo = inputsOtp.map(i => i.value).join('');
 
-            const data = await verificarOtp(codigo);
+            const response = await verificarOtp(codigo);
+
+            if (response.status === 0) {
+                alert('Sin conexión de red o al servidor');
+                return;
+            }
+
+            if (!response.ok) {
+                alert(`Error HTTP: ${response.status}`);
+                return;
+            }
+
+            const data = response.data;
 
             if (data.status === 'error') {
 

@@ -5,17 +5,29 @@ import { renderPedidos } from '../ui/orders_ui.js';
 
 export async function initPedidos() {
 
-    const data = await obtenerPedidos();
+    const response = await obtenerPedidos();
 
-    if (!data) {
-        renderPedidos(null);
+    if (response.status === 0) {
+        renderPedidos({ error: 'network' });
         return;
     }
 
-    if (data.status !== 'success') {
-        renderPedidos([]);
+    if (!response.ok){
+        renderPedidos({
+            error: 'http',
+            status: response.status
+        });
+
         return;
     }
 
-    renderPedidos(data.data);
+    if (response.data.status !== 'success') {
+        renderPedidos({
+            error: 'negocio',
+            mensaje: response.data.error
+        });
+        return;
+    }
+
+    renderPedidos(response.data.data);
 }

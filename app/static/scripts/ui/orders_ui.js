@@ -7,15 +7,28 @@ export function renderPedidos(pedidos) {
 
     container.innerHTML = '';
 
-    if (pedidos === null) {
-        container.textContent = 'Error al cargar pedidos';
+    if (pedidos?.error === 'network') {
+        container.textContent = 'Sin conexión al servidor';
         return;
     }
 
-    if (pedidos.length === 0) {
+    if (pedidos?.error === 'http') {
+        container.textContent = `Error HTTP: ${pedidos.status}`;
+        return;
+    }
+
+    if (pedidos?.error === 'negocio') {
+        container.textContent = pedidos.mensaje;
+        return;
+    }
+
+
+    if (!Array.isArray(pedidos) || pedidos.length === 0) {
         container.textContent = 'No hay pedidos';
         return;
     }
+
+
 
     pedidos.forEach(pedido => {
 

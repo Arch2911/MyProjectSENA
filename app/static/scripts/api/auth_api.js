@@ -14,16 +14,19 @@ export async function buscarCliente(cedula) {
 
         const data = await response.json();
 
-        if (!response.ok) {
-            console.error('Error HTTP: ', response.status);
-            return data;
-        }
+        return {
+            ok: response.ok,
+            status: response.status,
+            data
+        };
 
-        return data;
-
-    } catch (error) {
-        console.error('Error buscarCliente:', error);
-        return null;
+    } catch (error){
+        console.error('Error de red', error);
+        return {
+            ok: false,
+            status: 0,
+            error: 'network_error'
+        };
     }
 
 }
@@ -42,15 +45,18 @@ export async function verificarOtp(codigo) {
 
         const data = await response.json();
 
-        if (!response.ok) {
-            console.error('Error HTTP: ', response.status);
-            return data;
-        }
+        return {
+            ok: response.ok,
+            status: response.status,
+            data
+        };
 
-        return data;
-
-    } catch (error) {
-        console.error('Error verificarOtp:', error);
-        return null;
+    } catch (error){
+        console.error('Error de red', error);
+        return {
+            ok: false,
+            status: 0,
+            error: 'network_error'
+        };
     }
 }
