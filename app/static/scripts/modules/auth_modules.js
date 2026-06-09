@@ -1,6 +1,7 @@
 
 
 import { buscarCliente, verificarOtp } from '../api/auth_api.js';
+import { mostrarAlertaError, mostrarAlertaOk, mostrarAlertaTiempo, mostrarAlertaSesion } from '../ui/alert_ui.js';
 
 // Mostrar formulario OTP
 function mostrarFormularioOTP() {
@@ -23,6 +24,13 @@ export function initAuth() {
             btnBuscar.disabled = inputCedula.value.trim() === '';
         });
 
+        //Consultar con al presionar enter
+        inputCedula.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !btnBuscar.disabled) {
+                btnBuscar.click();
+            }
+        })
+
         // buscar cliente
         btnBuscar.addEventListener('click', async () => {
 
@@ -31,34 +39,45 @@ export function initAuth() {
             const response = await buscarCliente(cedula);
             
             if (response.status === 0) {
-                alert('Sin conexión de red o al servidor');
+                mostrarAlertaError({
+                    title: 'Sin conexión',
+                    text: 'Falla en la red o servidor'
+                })
                 return;
             }
 
             if (!response.ok) {
-                alert(`Error HTTP: ${response.status}`);
-                return;
+                console.error(`Error HTTP: ${response.status}`);
             }
 
             const data = response.data;
 
-            if (data.status === 'error') {
+            console.log('RESPUESTA COMPLETA:', data);
+            console.log('ERROR:', data?.error);
+
+            if (data?.status === 'error') {
 
                 // Se evalua los tipos de errores
 
-                if (data.error === 'json_requerido') {
-                    alert('No has ingresando ningún dato')
-                }else if (data.error === 'cedula_requerida') {
-                    alert('Por favor ingresa la cédula para la consulta')
-                }else if (data.error === 'cliente_no_existe') {
-                    alert('No se ha encontrado un cliente con esa cédula');
+                if (data.error === 'cliente_no_existe') {
+                    mostrarAlertaError({
+                        icon : 'info',
+                        title: 'Cliente no existe',
+                        text: 'No se ha encontrado un cliente con esa cédula'
+                    })
+                    return;
                 }
 
+                console.warn('Error no esperado:', data.error);
                 return;
 
             }
 
             if (data.status === 'success') {
+                mostrarAlertaOk({
+                    title: 'SMS enviado con exito'
+                })
+
                 mostrarFormularioOTP();
             }
         });
@@ -73,6 +92,11 @@ export function initAuth() {
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Backspace' && !input.value) {
                     inputsOtp[Math.max(0, index - 1)].focus();
+                }
+
+                //Consultar con al presionar enter
+                if (e.key === 'Enter' && !btnOtp.disabled) {
+                    btnOtp.click(); // reutiliza la lógica existente
                 }
             });
 
@@ -98,45 +122,61 @@ export function initAuth() {
             const response = await verificarOtp(codigo);
 
             if (response.status === 0) {
-                alert('Sin conexión de red o al servidor');
+                    mostrarAlertaError({
+                        icon: 'question',
+                        title: 'Sin conexión de red o el servidor',
+                        text: 'Verifica nuevamente.'
+                    })
                 return;
             }
 
             if (!response.ok) {
-                alert(`Error HTTP: ${response.status}`);
-                return;
+                console.error(`Error HTTP: ${response.status}`);
             }
 
             const data = response.data;
 
-            if (data.status === 'error') {
+            if (data?.status === 'error') {
 
                 // Se evalua los tipos de errores
 
-                if (data.error === 'json_requerido') {
-                    alert('No hay datos ingresados')
-                } else if (data.error === 'sesion_invalida') {
-                    alert('La sesión ha expirado, vuelve a iniciar sesión')
-                    window.location.href = '/';
-                } else if (data.error === 'cliente_no_existe') {
-                    alert('No se ha encontrado un cliente esa cédula');
-                } else if (data.error === 'codigo_requerido') {
-                    alert('Por favor ingresa el código completo')
-                } else if (data.error === 'codigo_invalido') {
-                    alert('El código es incorrecto, intenta nuevamente')
-                } else if (data.error === 'codigo_expirado') {
-                    alert ('El código expiró, solicita uno nuevo')
-                    window.location.href = '/';
+                if (data.error === 'sesion_invalida') {
+                    mostrarAlertaSesion();
+                    return;
+                }
+                
+                if (data.error === 'codigo_invalido') {
+                    mostrarAlertaError({
+                        icon: 'error',
+                        title: 'El código ingresado es incorrecto',
+                        text: 'Verifica nuevamente.'
+                    })
+                    return;
+                }
+                
+                if (data.error === 'codigo_expirado') {
+                    mostrarAlertaError({
+                        icon: 'info',
+                        title: 'Código ha expirado',
+                        text: 'Intenta conseguir uno nuevo.',
+                        redirect: '/'
+                    })
+                    return;
                 }
 
+                console.warn('Error no esperado:', data.error);
                 return;
 
             }
 
             if (data.status === 'success') {
 
-                window.location.href = '/pedidos';
+                mostrarAlertaTiempo({
+                    title: 'Verificación exitosa',
+                    timer: 2000,
+                    redirect: '/pedidos'
+                })
             }
-        });
+        })
     }
 }

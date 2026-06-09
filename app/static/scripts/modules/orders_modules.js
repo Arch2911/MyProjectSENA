@@ -6,6 +6,7 @@ import { renderPedidos } from '../ui/orders_ui.js';
 export async function initPedidos() {
 
     const response = await obtenerPedidos();
+    const data = response.data;
 
     if (response.status === 0) {
         renderPedidos({ error: 'network' });
@@ -21,7 +22,7 @@ export async function initPedidos() {
         return;
     }
 
-    if (response.data.status !== 'success') {
+    if (data.status !== 'success') {
         renderPedidos({
             error: 'negocio',
             mensaje: response.data.error
@@ -29,5 +30,5 @@ export async function initPedidos() {
         return;
     }
 
-    renderPedidos(response.data.data);
+    renderPedidos(data.data);
 }

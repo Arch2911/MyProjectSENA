@@ -6,7 +6,7 @@ from app.services.constants import CLIENTE_NO_EXISTE, OTP_ENVIADO, CODIGO_INVALI
 from . import auth_bp
 
 
-# Endpoint para buscar
+# Endpoint para consultar cliente con cédula.
 @auth_bp.route('/auth/login', methods = ['POST'])
 def buscar_cedula():
 
@@ -50,7 +50,7 @@ def buscar_cedula():
         'error': 'error_interno'
     }), 500
     
-# Endpoint para verificar OTP
+# Endpoint para verificar el código OTP.
 @auth_bp.route('/auth/verify', methods = ['POST'])
 def verificar_otp():
 
@@ -67,7 +67,7 @@ def verificar_otp():
         return jsonify({
             'status': 'error',
             'error': 'sesion_invalida'
-        }), 400
+        }), 401
     
     codigo = data.get('codigo')
     if not codigo:
