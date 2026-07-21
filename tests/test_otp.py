@@ -4,8 +4,10 @@ def test_generar_codigo():
 
     from app.services import otp_service
 
+    #ACT
     codigo = otp_service.generar_codigo()
 
+    #ASSERT
     assert codigo is not None
 
     assert len(codigo) == 6
@@ -19,7 +21,7 @@ def test_crear_otp(cliente):
     from unittest.mock import patch
 
 
-        # ARRANGE
+    # ARRANGE
     with patch('app.services.otp_service.envio_sms') as mock_sms:
         
         #ACT
@@ -40,15 +42,18 @@ def test_crear_otp(cliente):
 
         mock_sms.assert_called_once_with(cliente.movil, codigo)
 
-def test_crear_otp_cambio_de_estado(cliente):
+def test_crear_otp_invalida_otp_anterior(cliente):
     
     from app.models.otp_code import OtpCodigo
     from app.services import otp_service
 
+    #ARRANGE    
     otp1 = otp_service.crear_otp(cliente.id_cliente)
 
+    #ACT
     otp2 = otp_service.crear_otp(cliente.id_cliente)
 
+    #ASSERT
     otp_db = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente).all()
 
     for otp in otp_db:
@@ -74,11 +79,7 @@ def test_verificar_otp_valido(cliente):
     from app.services.constants import CODIGO_VALIDO
 
     # ARRANGE
-    codigo = otp_service.crear_otp(cliente.id_cliente)
-
-    otp_db = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente).first()
-
-    assert otp_db.usado is False
+    codigo = otp_service.crear_otp(cliente.id_cliente, cliente.movil)
 
     #ACT
     resultado = otp_service.verificar_otp(cliente.id_cliente, codigo)
@@ -86,31 +87,28 @@ def test_verificar_otp_valido(cliente):
     # ASSERT (resultado)
     assert resultado == CODIGO_VALIDO
 
-    # ASSERT (Se consulta nuevamente el estado del código actualizado en BD)
+    # ASSERT (Se consulta el estado del código actualizado en BD)
     otp_actualizado = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente).first()
     assert otp_actualizado.usado is True
 
-def test_verificar_otp_valido_pero_usado(cliente):
+def test_verificar_otp_no_permite_reutilizar_codigo(cliente):
 
     from app.services import otp_service
     from app.models.otp_code import OtpCodigo
     from app.services.constants import CODIGO_NO_EXISTE
 
-    codigo = otp_service.crear_otp(cliente.id_cliente)
+    #ARRANGE
+    codigo = otp_service.crear_otp(cliente.id_cliente, cliente.movil)
 
-    otp = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente).first()
+    #ACT
+    primer_intento = otp_service.verificar_otp(cliente.id_cliente, codigo)
+    segundo_intento = otp_service.verificar_otp(cliente.id_cliente, codigo)
 
-    assert otp.codigo == codigo
+    #ASSERT
+    otp_db = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente).first()
 
-    ingreso_codigo1 = otp_service.verificar_otp(cliente.id_cliente, codigo)
-
-    otp = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente).first()
-
-    assert otp.usado is True
-
-    ingreso_codigo2 = otp_service.verificar_otp(cliente.id_cliente, codigo)
-
-    assert ingreso_codigo2 == CODIGO_NO_EXISTE
+    assert otp_db.usado is True
+    assert segundo_intento == CODIGO_NO_EXISTE
 
 def test_verificar_otp_invalido(cliente):
 
@@ -129,7 +127,7 @@ def test_verificar_otp_invalido(cliente):
 
     resultado = otp_service.verificar_otp(cliente.id_cliente, codigo_mal_ingresado)
 
-    # ASSERT (resultado)
+    # ASSERT
     assert resultado == CODIGO_INVALIDO
 
 
@@ -156,7 +154,7 @@ def test_verificar_otp_expirado(cliente):
     assert resultado == CODIGO_EXPIRADO
 
 
-def test_verificar_otp_no_existe(cliente):
+def test_verificar_otp_cuando_no_existe_otp(cliente):
 
     from app.models.otp_code import OtpCodigo
     from app.services import otp_service

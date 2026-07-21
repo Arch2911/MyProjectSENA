@@ -87,7 +87,7 @@ def verificar_otp(id_cliente, codigo, ahora=None):
             - codigo_expirado
             - codigo_no_existe
     """
-    # Resolver dependencia de tiempo // esto se usao para testear
+    # Resolver dependencia de tiempo // esto se usa para testear
     if ahora is None:
         ahora = datetime.now(UTC).replace(tzinfo=None)
 
