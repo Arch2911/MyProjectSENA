@@ -14,16 +14,8 @@ def buscar_cliente(cedula):
 
     if cliente is None:     
         return CLIENTE_NO_EXISTE
-    
-    pedidos = Pedido.query.filter_by(id_cliente=cliente.id_cliente).all() # se filtra los pedidos del cliente por id_cliente
 
-    if not pedidos:
-        return CLIENTE_SIN_PEDIDOS
-    
-
-    codigo = otp_service.crear_otp(cliente.id_cliente)
-
-    sms_service.envio_sms(cliente.movil, codigo)
+    otp_service.crear_otp(cliente.id_cliente, cliente.movil)
 
 
     return OTP_ENVIADO

@@ -18,12 +18,14 @@ def app():
         yield app
         db.drop_all()
 
+"""
 @pytest.fixture
 def db_session(app):
     return db
+"""
 
 @pytest.fixture
-def cliente(db_session):
+def cliente(app):
     from app.models.users import Cliente
 
     cliente = Cliente(cedula='123',nombre='Juan', apellido='Contrera', correo='notiene@notiene.com', movil='3001234567')
@@ -33,7 +35,7 @@ def cliente(db_session):
     return cliente
 
 @pytest.fixture
-def estado(db_session):
+def estado(app):
     from app.models.orders import Estado
     
     estado = Estado(nombre_estado='En camino')
@@ -43,7 +45,7 @@ def estado(db_session):
     return estado
 
 @pytest.fixture
-def pedido(db_session, cliente, estado):
+def pedido(app, cliente, estado):
     from app.models.orders import Pedido
     from datetime import datetime, UTC
 

@@ -3,6 +3,7 @@ from ..extensions import db
 from ..models.otp_code import OtpCodigo
 from datetime import datetime, UTC, timedelta
 import secrets
+from app.services.sms_service import envio_sms
 
 from ..services.constants import CODIGO_EXPIRADO, CODIGO_INVALIDO, CODIGO_NO_EXISTE, CODIGO_VALIDO, OTP_MINUTOS_EXPIRACION
 
@@ -23,7 +24,7 @@ def generar_codigo():
 
     return otp
 
-def crear_otp(id_cliente):
+def crear_otp(id_cliente, movil):
 
     """
     Crea un nuevo código OTP para un cliente.
@@ -60,6 +61,8 @@ def crear_otp(id_cliente):
     # Guardar en base de datos
     db.session.add(nuevo_otp)
     db.session.commit()
+
+    envio_sms(movil, codigo_generado)
     
     return codigo_generado
 
