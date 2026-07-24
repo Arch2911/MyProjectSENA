@@ -5,7 +5,7 @@ from ..models.orders import Pedido
 from app.services import otp_service
 from app.services import sms_service
 
-from ..services.constants import CODIGO_VALIDO, CLIENTE_NO_EXISTE, CLIENTE_SIN_PEDIDOS, OTP_ENVIADO
+from ..services.constants import CODIGO_VALIDO, CLIENTE_NO_EXISTE, OTP_ENVIADO
 
 # Función para buscar al cliente por cédula
 def buscar_cliente(cedula):
@@ -36,3 +36,4 @@ def verificacion_cliente_otp(cedula, codigo):
         return estado_codigo
     
     return CODIGO_VALIDO
+

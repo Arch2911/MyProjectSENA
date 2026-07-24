@@ -18,11 +18,11 @@ def app():
         yield app
         db.drop_all()
 
-"""
+
 @pytest.fixture
 def db_session(app):
     return db
-"""
+
 
 @pytest.fixture
 def cliente(app):
