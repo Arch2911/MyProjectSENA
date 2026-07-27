@@ -26,12 +26,6 @@ def obtener_pedidos():
             'status': 'error',
             'error': 'cliente_no_existe'
         }), 404
-
-    if resultado == CLIENTE_SIN_PEDIDOS:
-        return jsonify({
-            'status': 'success',
-            'data': []
-        }), 200
     
     return jsonify({
         'status': 'success',
