@@ -4,6 +4,7 @@ from app import create_app
 from app.extensions import db
 from config import TestingConfig
 
+# Fixture para crear el contexto de la aplicación y la base de datos de pruebas.
 @pytest.fixture
 def app():
     app = create_app(TestingConfig)
@@ -18,12 +19,12 @@ def app():
         yield app
         db.drop_all()
 
-
+# Fixture para acceder a la sesión de la base de datos durante las pruebas.
 @pytest.fixture
 def db_session(app):
     return db
 
-
+# Fixture para simular cliente registrado en bd durante las pruebas.
 @pytest.fixture
 def cliente(app):
     from app.models.users import Cliente
@@ -34,6 +35,7 @@ def cliente(app):
 
     return cliente
 
+# Fixture para simular estado registrado en bd durante las pruebas.
 @pytest.fixture
 def estado(app):
     from app.models.orders import Estado
@@ -44,6 +46,7 @@ def estado(app):
 
     return estado
 
+# Fixture para simular pedido registrado en bd durante las pruebas.
 @pytest.fixture
 def pedido(app, cliente, estado):
     from app.models.orders import Pedido
@@ -54,5 +57,10 @@ def pedido(app, cliente, estado):
     db.session.commit()
 
     return pedido
+
+# Fixture para simular peticiones HTTP a la aplicación durante las pruebas.
+@pytest.fixture
+def peticiones(app):
+    return app.test_client()
 
 

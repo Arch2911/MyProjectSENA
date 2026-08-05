@@ -30,17 +30,18 @@ def test_crear_otp(cliente):
         # ASSERT
         otp_db = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente).first()
 
-        assert otp_db is not None
+    mock_sms.assert_called_once_with(cliente.movil, codigo)
 
-        assert otp_db.codigo == codigo
+    assert otp_db is not None
 
-        assert otp_db.usado is False
+    assert otp_db.codigo == codigo
 
-        assert otp_db.expiracion is not None
+    assert otp_db.usado is False
 
-        assert otp_db.codigo is not None
+    assert otp_db.expiracion is not None
 
-        mock_sms.assert_called_once_with(cliente.movil, codigo)
+    assert otp_db.codigo is not None
+
 
 def test_crear_otp_invalida_otp_anterior(cliente):
     
