@@ -63,4 +63,10 @@ def pedido(app, cliente, estado):
 def peticiones(app):
     return app.test_client()
 
+# Fixture para simular peticiones HTTP, con session activa durante las pruebas a ejecutar.
+@pytest.fixture
+def peticiones_autenticadas(cliente, peticiones):
+    with peticiones.session_transaction() as session:
+        session["cedula_temporal"] = cliente.cedula
+    return peticiones
 

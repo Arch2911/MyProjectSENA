@@ -30,7 +30,7 @@ def test_obtener_pedido_cliente_existente_sin_pedido(cliente):
     # ASSERT
     assert resultado == []
 
-def test_obtener_pedido_cliente_no_existente(app):
+def test_obtener_pedido_cliente_inexistente(app):
 
     from app.services import order_service
     from app.services.constants import CLIENTE_NO_EXISTE

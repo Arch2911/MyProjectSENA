@@ -1,12 +1,79 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedidos</title>
+    <title>Mis Pedidos - Seguimiento</title>
+    <script src="https://kit.fontawesome.com/82e1ee39b7.js" crossorigin="anonymous"></script>
+    <!-- Hoja de estilos exclusiva para el Dashboard -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 </head>
-<body>
-    <div id="pedidos-container"></div>
-<script type="module" src="../static/scripts/app.js"></script>
+<body class="dashboard-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="{{ url_for('static', filename='Images/Ruta.png') }}" alt="Logo" class="logo-dashboard">
+        </div>
+
+        <div class="user-panel">
+            <div class="user-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="user-info">
+                <span class="user-name">CLIENTE</span>
+                <span class="status-online"><i class="fa-solid fa-circle"></i> ONLINE</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <ul>
+                <li class="active">
+                    <a href="javascript:void(0)">
+                        <i class="fa-solid fa-box"></i>
+                        <span>Mis Pedidos</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/" id="btn-logout">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-wrapper">
+        <div class="breadcrumb-container">
+            <p class="breadcrumb">
+                <i class="fa-solid fa-house"></i> / <span>Pedidos del cliente</span>
+            </p>
+        </div>
+
+        <h1 class="page-title">Seguimiento de Pedidos</h1>
+
+        <div class="panel-card">
+            <div class="panel-header">
+                <span class="panel-title">Lista de pedidos</span>
+                <div class="panel-actions">
+                    <button class="btn-icon" type="button"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </div>
+
+            <div class="panel-body" id="pedidos-container">
+                <!-- Se llena mediante ui/orders_ui.js -->
+            </div>
+        </div>
+
+        <footer class="dashboard-footer">
+            <p>SISTEMA DE SEGUIMIENTO DE PEDIDOS DE TIENDA ONLINE</p>
+        </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="module" src="{{ url_for('static', filename='scripts/app.js') }}"></script>
 </body>
 </html>

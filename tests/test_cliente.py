@@ -9,7 +9,7 @@ def test_buscar_cliente_existente(cliente):
     # ASSERT
     assert resultado == OTP_ENVIADO
 
-def test_buscar_cliente_no_existente(app):
+def test_buscar_cliente_inexistente(app):
 
     from app.services import cliente_service
     from app.services.constants import CLIENTE_NO_EXISTE
@@ -35,7 +35,7 @@ def test_verificacion_cliente_existente_otp_valido(cliente):
     # ASSERT
     assert resultado == CODIGO_VALIDO
 
-def test_verificacion_cliente_no_existente(app):
+def test_verificacion_cliente_inexistente(app):
 
     from app.services import cliente_service
     from app.services.constants import CLIENTE_NO_EXISTE

@@ -49,10 +49,10 @@ def test_crear_otp_invalida_otp_anterior(cliente):
     from app.services import otp_service
 
     #ARRANGE    
-    otp1 = otp_service.crear_otp(cliente.id_cliente)
+    otp1 = otp_service.crear_otp(cliente.id_cliente, cliente.movil)
 
     #ACT
-    otp2 = otp_service.crear_otp(cliente.id_cliente)
+    otp2 = otp_service.crear_otp(cliente.id_cliente, cliente.movil)
 
     #ASSERT
     otp_db = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente).all()

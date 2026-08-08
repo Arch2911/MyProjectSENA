@@ -1,11 +1,20 @@
 # LOGIN
 def test_login_cliente_existente_json_valido(cliente, peticiones):
 
+    from unittest.mock import patch
+    from app.services.constants import OTP_ENVIADO
+
     # ARRANGE
     data = {'cedula': cliente.cedula}
 
-    # ACT
-    response = peticiones.post('/auth/login', json=data)
+    with patch('app.routes.auth.routes.buscar_cliente') as mock_buscar:
+
+        mock_buscar.return_value = OTP_ENVIADO
+
+        # ACT
+        response = peticiones.post('/auth/login', json=data)
+
+    mock_buscar.assert_called_once_with(cliente.cedula)
 
     # ASSERT
     assert response.status_code == 200 # pertenece a la respuesta HTTP.
@@ -44,7 +53,7 @@ def test_login_cedula_no_enviada(peticiones):
 
     assert body['error'] == 'cedula_requerida'
 
-def test_login_cliente_no_existente(peticiones):
+def test_login_cliente_inexistente(peticiones):
 
     # ARRANGE
     data = {'cedula': '124'}
@@ -79,7 +88,7 @@ def test_login_error_interno(cliente, peticiones):
 
 #VERIFY
 
-def test_verify_valido(peticiones):
+def test_verify_valido(peticiones_autenticadas):
 
     from unittest.mock import patch
     from app.services.constants import CODIGO_VALIDO
@@ -88,16 +97,12 @@ def test_verify_valido(peticiones):
     cedula = 123
     data = {'codigo': 122457}
 
-    with peticiones.session_transaction() as session:
-
-        session["cedula_temporal"] = cedula
-
     with patch('app.routes.auth.routes.verificacion_cliente_otp') as mock_verificar:
 
         mock_verificar.return_value = CODIGO_VALIDO
 
         # ACT
-        response = peticiones.post('/auth/verify', json=data)
+        response = peticiones_autenticadas.post('/auth/verify', json=data)
 
     # ASSERT
     mock_verificar.assert_called_once_with(cedula, 122457)
@@ -126,9 +131,6 @@ def test_verify_sin_json(peticiones):
 
 def test_verify_session_invalida(peticiones):
 
-    from unittest.mock import patch
-    from app.services.constants import CODIGO_VALIDO
-
     # ARRANGE
     data = {'codigo': 123456}
 
@@ -143,17 +145,13 @@ def test_verify_session_invalida(peticiones):
 
     assert body['error'] == 'sesion_invalida'
 
-def test_verify_codigo_no_enviado(cliente, peticiones):
+def test_verify_codigo_no_enviado(peticiones_autenticadas):
 
     # ARRANGE
     data = {'codigo': ''}
 
-    with peticiones.session_transaction() as session:
-
-        session['cedula_temporal'] = cliente.cedula
-
     # ACT
-    response = peticiones.post('/auth/verify', json=data)
+    response = peticiones_autenticadas.post('/auth/verify', json=data)
 
     # ASSERT
     assert response.status_code == 400
@@ -162,7 +160,7 @@ def test_verify_codigo_no_enviado(cliente, peticiones):
 
     assert body['error'] == 'codigo_requerido'
 
-def test_verify_cliente_no_existente(peticiones):
+def test_verify_cliente_inexistente(peticiones):
 
     from unittest.mock import patch
     from app.services.constants import CLIENTE_NO_EXISTE
@@ -183,7 +181,7 @@ def test_verify_cliente_no_existente(peticiones):
         response = peticiones.post('/auth/verify', json=data)
 
     # ASSERT
-    mock_verificar.assert_called_once_with(124, 123456)
+    mock_verificar.assert_called_once_with(cedula_no_existente, 123456)
 
     assert response.status_code == 404
 
@@ -191,7 +189,7 @@ def test_verify_cliente_no_existente(peticiones):
 
     assert body['error'] == 'cliente_no_existe'
 
-def test_verify_codigo_invalido(cliente, peticiones):
+def test_verify_codigo_invalido(cliente, peticiones_autenticadas):
 
     from unittest.mock import patch
     from app.services.constants import CODIGO_INVALIDO
@@ -199,19 +197,15 @@ def test_verify_codigo_invalido(cliente, peticiones):
     # ARRANGE
     data = {'codigo': 123456}
 
-    with peticiones.session_transaction() as session:
-
-        session['cedula_temporal'] = cliente.cedula
-
     with patch('app.routes.auth.routes.verificacion_cliente_otp') as mock_verificar:
 
         mock_verificar.return_value = CODIGO_INVALIDO
 
         # ACT
-        response = peticiones.post('/auth/verify', json=data)
+        response = peticiones_autenticadas.post('/auth/verify', json=data)
 
     # ASSERT
-    mock_verificar.assert_called_once_with(123, 123456)
+    mock_verificar.assert_called_once_with(cliente.cedula, 123456)
 
     assert response.status_code == 401
 
@@ -219,7 +213,7 @@ def test_verify_codigo_invalido(cliente, peticiones):
 
     assert body['error'] == 'codigo_invalido'
 
-def test_verify_codigo_expirado(cliente, peticiones):
+def test_verify_codigo_expirado(cliente, peticiones_autenticadas):
 
     from unittest.mock import patch
     from app.services.constants import CODIGO_EXPIRADO
@@ -227,18 +221,14 @@ def test_verify_codigo_expirado(cliente, peticiones):
     # ARRANGE
     data = {'codigo': 123456}
 
-    with peticiones.session_transaction() as session:
-
-        session['cedula_temporal'] = cliente.cedula
-
     with patch('app.routes.auth.routes.verificacion_cliente_otp') as mock_verificar:
 
         mock_verificar.return_value = CODIGO_EXPIRADO
 
         # ACT
-        response = peticiones.post('/auth/verify', json=data)
+        response = peticiones_autenticadas.post('/auth/verify', json=data)
 
-    mock_verificar.assert_called_once_with(123, 123456)
+    mock_verificar.assert_called_once_with(cliente.cedula, 123456)
 
     assert response.status_code == 410
 
@@ -246,25 +236,21 @@ def test_verify_codigo_expirado(cliente, peticiones):
 
     assert body['error'] == 'codigo_expirado'
 
-def test_verify_error_interno(cliente, peticiones):
+def test_verify_error_interno(cliente,peticiones_autenticadas):
 
     from unittest.mock import patch
 
     # ARRANGE
     data = {'codigo': 123456}
 
-    with peticiones.session_transaction() as session:
-
-        session['cedula_temporal'] = cliente.cedula
-
     with patch('app.routes.auth.routes.verificacion_cliente_otp') as mock_verificar:
 
         mock_verificar.return_value = None
 
         # ACT
-        response = peticiones.post('/auth/verify', json=data)
+        response = peticiones_autenticadas.post('/auth/verify', json=data)
 
-    mock_verificar.assert_called_once_with(123, 123456)
+    mock_verificar.assert_called_once_with(cliente.cedula, 123456)
 
     assert response.status_code == 500
 
