@@ -20,11 +20,23 @@ def obtener_pedido_cliente(cedula):
 
     for pedido in pedidos:
 
+        detalles_lista = []
+
+        for detalle in pedido.detalles:
+            detalles_lista.append({
+                'nombre_producto': detalle.producto.nombre if detalle.producto else 'Producto',
+                'cantidad': detalle.cantidad,
+                'precio_unitario': detalle.precio_unitario,
+                'subtotal': detalle.subtotal
+            })
+
         lista_pedidos.append({
+            'id': pedido.id_pedido,
             'numero_pedido': pedido.numero_pedido,
             'fecha_pedido': str(pedido.fecha_pedido),
             'total': pedido.total,
-            'estado': pedido.estado.nombre_estado
+            'estado': pedido.estado.nombre_estado,
+            'detalles': detalles_lista
             })
 
     return lista_pedidos

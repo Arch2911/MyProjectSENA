@@ -46,6 +46,19 @@ def estado(app):
 
     return estado
 
+# Fixture para simular producto registrado en BD
+@pytest.fixture
+def producto(app):
+    from app.models.orders import Producto
+
+    prod = Producto(
+        nombre='Laptop Gamer',
+        precio=50000
+    )
+    db.session.add(prod)
+    db.session.commit()
+    return prod
+
 # Fixture para simular pedido registrado en bd durante las pruebas.
 @pytest.fixture
 def pedido(app, cliente, estado):
@@ -57,6 +70,22 @@ def pedido(app, cliente, estado):
     db.session.commit()
 
     return pedido
+
+# Fixture para vincular el pedido con el producto a través de DetallePedido
+@pytest.fixture
+def detalle_pedido(app, pedido, producto):
+    from app.models.orders import DetallePedido
+
+    detalle = DetallePedido(
+        id_pedido=pedido.id_pedido,
+        id_producto=producto.id_producto,
+        cantidad=1,
+        precio_unitario=50000,
+        subtotal=50000
+    )
+    db.session.add(detalle)
+    db.session.commit()
+    return detalle
 
 # Fixture para simular peticiones HTTP a la aplicación durante las pruebas.
 @pytest.fixture

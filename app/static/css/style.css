@@ -65,10 +65,19 @@ body {
     font-size: 18px;
 }
 
+.form-box label {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 7px;
+    color: #333;
+    display: block;
+    width: 100%;
+}
+
 .in {
     width: 100%;
     padding: 10px;  
-    font-size: 18px;      
+    font-size: 15px;      
     font-weight: 500; 
     margin-bottom: 20px;
     text-align: center;
