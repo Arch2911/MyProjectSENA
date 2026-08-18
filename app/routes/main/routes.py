@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, session, redirect, url_for
 
 from . import main_bp
 
@@ -10,4 +10,10 @@ def home():
 #Endpoint para cargar la pagina de pedidos
 @main_bp.route('/pedidos')
 def pedidos():
+
+    cedula = session.get('cedula')
+
+    if 'cedula' not in session:
+        return redirect(url_for('main.home'))
+    
     return render_template('detalle_pedido.html')

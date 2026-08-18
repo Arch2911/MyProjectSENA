@@ -60,3 +60,21 @@ export async function verificarOtp(codigo) {
         };
     }
 }
+
+export async function cerrarSesion() {
+    try {
+        const response = await fetch('/auth/logout', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        });
+
+        return response;
+    } catch (error) {
+        console.error(' Error de red', error);
+        return {
+            ok: false,
+            status: 0,
+            error: 'network_error'
+        }
+    }
+}

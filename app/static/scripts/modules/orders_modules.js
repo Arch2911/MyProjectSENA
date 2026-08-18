@@ -2,6 +2,7 @@
 
 import { obtenerPedidos } from '../api/orders_api.js';
 import { renderPedidos } from '../ui/orders_ui.js';
+import { cerrarSesion } from '../api/auth_api.js';
 
 export async function initPedidos() {
 
@@ -31,4 +32,26 @@ export async function initPedidos() {
     }
 
     renderPedidos(data.data);
+
+    // Módulo de Logout
+
+    const btnLogout = document.getElementById('btn-logout');
+
+    if (btnLogout) {
+        btnLogout.addEventListener('click', async (e) => {
+            //Detiene el comportamiento de enlace <a> al redireccionar automáticamente a la pagina princial
+            e.preventDefault();
+
+            // Se ejecuta la eliminación de sessión
+            const response = await cerrarSesion()
+
+            // Al cerrar se sessión se redirige
+            if (!response.ok){
+                console.error(`Error HTTP: ${response.status}`)
+                return;
+            }
+        window.location.href = '/';
+        })
+    }
+
 }

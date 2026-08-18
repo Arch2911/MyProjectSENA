@@ -1,7 +1,6 @@
 from flask import request, jsonify, session
 from app.services.order_service import obtener_pedido_cliente
-from app.services.constants import CLIENTE_NO_EXISTE, CLIENTE_SIN_PEDIDOS
-
+from app.services.constants import CLIENTE_NO_EXISTE
 from . import order_bp
 
 # Endpoint de pedidos

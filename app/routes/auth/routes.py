@@ -111,3 +111,11 @@ def verificar_otp():
         'error': 'error_interno'
     }), 500
 
+@auth_bp.route('/auth/logout', methods = ['POST'])
+def logout():
+
+    session.pop('cedula', None)
+
+    return jsonify({
+        'status': 'success',
+    }), 200
