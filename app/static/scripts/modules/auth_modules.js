@@ -157,7 +157,7 @@ export function initAuth() {
                 if (data.error === 'codigo_expirado') {
                     mostrarAlertaError({
                         icon: 'info',
-                        title: 'Código ha expirado',
+                        title: 'El código ha expirado',
                         text: 'Intenta conseguir uno nuevo.',
                         redirect: '/'
                     })
