@@ -23,7 +23,7 @@ def app():
 # Fixture para acceder a la sesión de la base de datos durante las pruebas.
 @pytest.fixture
 def db_session(app):
-    yield db
+    yield db.session
 
 # Fixture para simular cliente registrado en bd durante las pruebas.
 @pytest.fixture
@@ -101,6 +101,11 @@ def peticiones_autenticadas(cliente, peticiones):
     yield peticiones
 
 
+# >>>>>>>>>>> Fixture de Playwright <<<<<<<<<<<<<<
+
+from playwright.sync_api import Page
+
+
 @pytest.fixture
 def live_server(app):
 
@@ -120,35 +125,37 @@ def live_server(app):
 
     server.shutdown()
 
-import re
-from playwright.sync_api import Page
-from tests.e2e.page.page_auth import Autenticacion
 
 @pytest.fixture
 def auth_page(page: Page):
+    from tests.e2e.page.page_auth import Autenticacion
     yield Autenticacion(page)
+
+@pytest.fixture
+def order_page(page_autenticada):
+    from tests.e2e.page.page_order import Pedidos
+    yield Pedidos(page_autenticada)
+
+@pytest.fixture
+def base(page: Page):
+    from tests.e2e.page.page_base import Base
+    yield Base(page)
 
 
 
 @pytest.fixture
-def page_autenticada(page: Page, app, live_server, cliente, pedido, detalle_pedido):
+def page_autenticada(auth_page, app, live_server, cliente):
 
     from app.models.otp_code import OtpCodigo
 
-    page.goto(live_server)
+    auth_page.abrir_pagina(live_server)
 
-    page.get_by_placeholder("Ingrese su número de identificación").fill(str(cliente.cedula))
-
-    page.get_by_role("button", name="Continuar").click()
+    auth_page.consultar(cliente.cedula)
 
     with app.app_context():
         otp_registro = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente, usado=False).first()
         codigo = otp_registro.codigo
 
-    page.locator(".code-input").first.click()
+    auth_page.verificar_otp(codigo)
 
-    page.keyboard.type(codigo)
-
-    page.get_by_role("button", name="Verificar").click()
-
-    yield page
+    yield auth_page.page

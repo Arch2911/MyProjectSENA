@@ -76,7 +76,7 @@ def test_verificacion_cliente_otp_expirado(cliente, db_session):
     codigo = otp_service.crear_otp(cliente.id_cliente, cliente.movil)
     otp_ex = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente).first()
     otp_ex.expiracion = otp_ex.expiracion - timedelta(minutes=3)
-    db_session.session.commit()
+    db_session.commit()
 
     # ACT
     resultado = cliente_service.verificacion_cliente_otp(cliente.cedula, codigo)
@@ -94,7 +94,7 @@ def test_verificacion_cliente_otp_no_existe(cliente, db_session):
     codigo = otp_service.crear_otp(cliente.id_cliente, cliente.movil)
     otp = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente, usado=False).first()
     otp.usado = True
-    db_session.session.commit()
+    db_session.commit()
 
     # ACT
     resultado = cliente_service.verificacion_cliente_otp(cliente.cedula, codigo)

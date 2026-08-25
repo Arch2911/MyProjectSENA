@@ -1,6 +1,6 @@
 
 
-def test_autenticacion_cliente_existente_otp_valido(auth_page, app, live_server, cliente):
+def test_autenticacion_cliente_existente_otp_valido(auth_page, base, app, live_server, cliente):
 
     from app.models.otp_code import OtpCodigo
 
@@ -9,7 +9,7 @@ def test_autenticacion_cliente_existente_otp_valido(auth_page, app, live_server,
 
     auth_page.consultar(cliente.cedula)
 
-    auth_page.texto_visible("SMS enviado con exito")
+    base.texto_visible("SMS enviado con exito")
 
     with app.app_context():
         otp_registro = OtpCodigo.query.filter_by(id_cliente=cliente.id_cliente, usado=False).first()
@@ -17,19 +17,19 @@ def test_autenticacion_cliente_existente_otp_valido(auth_page, app, live_server,
 
     auth_page.verificar_otp(codigo)
 
-    auth_page.texto_visible("Verificación exitosa")
+    base.texto_visible("Verificación exitosa")
 
 
-def test_autenticacion_cliente_inexistente(auth_page, live_server):
+def test_autenticacion_cliente_inexistente(auth_page, base, live_server):
 
     auth_page.abrir_pagina(live_server)
 
     auth_page.consultar(124)
 
-    auth_page.texto_visible("Cliente no existe")
+    base.texto_visible("Cliente no existe")
 
 
-def test_autenticacion_cliente_existente_otp_invalido(auth_page, live_server, cliente):
+def test_autenticacion_cliente_existente_otp_invalido(auth_page, base, live_server, cliente):
 
     auth_page.abrir_pagina(live_server)
 
@@ -39,10 +39,10 @@ def test_autenticacion_cliente_existente_otp_invalido(auth_page, live_server, cl
 
     auth_page.verificar_otp(codigo)
 
-    auth_page.texto_visible("El código ingresado es incorrecto")
+    base.texto_visible("El código ingresado es incorrecto")
 
 
-def test_autenticacion_cliente_existente_otp_expirado(auth_page, app, live_server, cliente, db_session):
+def test_autenticacion_cliente_existente_otp_expirado(auth_page, base, app, live_server, cliente, db_session):
 
     from app.models.otp_code import OtpCodigo
     from datetime import timedelta
@@ -57,26 +57,32 @@ def test_autenticacion_cliente_existente_otp_expirado(auth_page, app, live_serve
         codigo = otp_registro.codigo
         otp_registro.expiracion = otp_registro.expiracion - timedelta(minutes=4)
 
-        db_session.session.commit()
-        db_session.session.remove()
+        db_session.commit()
 
     auth_page.verificar_otp(codigo)
 
-    auth_page.texto_visible("El código ha expirado")
+    base.texto_visible("El código ha expirado")
 
-def test_cliente_autenticado_con_pedido(page_autenticada, auth_page, live_server):
+def test_cliente_autenticado_con_pedido(order_page, base , detalle_pedido):
 
-    page_autenticada.goto(f"{live_server}/pedidos")
 
-    auth_page.texto_visible("Lista de pedidos")
+    base.texto_visible("Lista de pedidos")
 
-    page_autenticada.get_by_role("button", name="Ver").click()
+    order_page.ver_detalles()
 
-    auth_page.texto_visible("Productos del pedido")
+    base.texto_visible("Productos del pedido")
 
-    page_autenticada.get_by_role("button", name="Cerrar").click()
+    order_page.cerrar_detalles()
 
-    page_autenticada.get_by_role("link", name="Logout").click()
+    order_page.cerrar_sesion()
+
+def test_cliente_autenticado_sin_pedido(order_page, base):
+
+    base.texto_visible("Lista de pedidos")
+
+    base.texto_visible("No tienes pedidos registrados")
+
+    order_page.cerrar_sesion()
 
 
 
